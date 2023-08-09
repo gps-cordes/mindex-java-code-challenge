@@ -38,7 +38,7 @@ public class EmployeeServiceImplTest {
     public void setup() {
         employeeUrl = "http://localhost:" + port + "/employee";
         employeeIdUrl = "http://localhost:" + port + "/employee/{id}";
-        employeeReportIdUrl = "http://localhost:" + port + "/employee/report/{id}";
+        employeeReportIdUrl = "http://localhost:" + port + "/employee/{id}/report";
     }
 
     @Test
@@ -87,7 +87,7 @@ public class EmployeeServiceImplTest {
         assertNotNull("John Lennon does not exist in database", johnLennon);
         assertEquals("John Lennon Id does not match",johnLennon.getEmployeeId(), johnLennonEmployeeId);
 
-        // when GET /employee/report/{id} is requested
+        // when GET /employee/{id}/report is requested
 
         // it should return 4
         ReportingStructure johnLennonReport = restTemplate.getForEntity(employeeReportIdUrl, ReportingStructure.class, johnLennonEmployeeId).getBody();
@@ -104,7 +104,7 @@ public class EmployeeServiceImplTest {
         assertNotNull("employee does not exist in database", employee);
         assertEquals("employeeId does not match",employee.getEmployeeId(), testEmployeeId);
 
-        // when GET /employee/report/{id} is requested
+        // when GET /employee/{id}/report is requested
 
         // it should return 0
         ReportingStructure employeeReport = restTemplate.getForEntity(employeeReportIdUrl, ReportingStructure.class, testEmployeeId).getBody();
@@ -135,7 +135,7 @@ public class EmployeeServiceImplTest {
 
         // skip data assertion since previous test covers insert functionality
 
-        // when GET /employee/report/{id} is requested
+        // when GET /employee/{id}/report is requested
 
         // it should return 0
         ReportingStructure employeeReport = restTemplate.getForEntity(employeeReportIdUrl, ReportingStructure.class, rootEmployee.getEmployeeId()).getBody();
@@ -153,7 +153,7 @@ public class EmployeeServiceImplTest {
         ResponseEntity response = restTemplate.getForEntity(employeeReportIdUrl, ReportingStructure.class, "ThisEmployeeIdDoesNotExist");
         assertEquals("employee report for an employee that should not exist does not return no content status code", HttpStatus.NO_CONTENT, response.getStatusCode());
     }
-    
+
     private static void assertEmployeeEquivalence(Employee expected, Employee actual) {
         assertEquals(expected.getFirstName(), actual.getFirstName());
         assertEquals(expected.getLastName(), actual.getLastName());
