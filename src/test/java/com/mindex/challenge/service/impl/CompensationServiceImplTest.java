@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -93,40 +94,52 @@ public class CompensationServiceImplTest{
         testCompensation.setEffectiveDate(LocalDate.now());
         compensationService.createCompensation(testEmployee.getEmployeeId(), testCompensation);
         // then return an error
-        //
-        // NOTE: UPDATE is not specified and multiple compensations are not described.
-        //          the effective date implies that there should be historical compensations supported,
-        //          but I am choosing to support basic functionality until further requirements are received
     }
 
-    @Test
+    @Test(expected = EmployeeDoesNotExistException.class)
     public void readCompensation_nullInput(){
         // given an employeeId is null
         // throw an error could alert the caller of the API what is wrong
+        compensationService.readCompensation(null);
     }
 
     // Read
-    @Test
+    @Test(expected = EmployeeDoesNotExistException.class)
     public void readCompensation_employeeDoesNotExist(){
         // given an employeeId is provided
+
         // and the employee does not exist
         //  Throw an error can alert the caller of the API what is wrong
+        compensationService.readCompensation("thisEmployeeIdDoesNotExist");
     }
 
     @Test
     public void readCompensation_employeeDoesExist_compensationDoesNotExist(){
-        // given an employeeId is provided
-        // and the employee does exist
+        // given an employee
+        Employee testEmployee = createNewTestEmployee();
         // and the compensation does not exist
         // then return an empty response
+        assertEquals(Optional.empty(), compensationService.readCompensation(testEmployee.getEmployeeId()));
     }
 
     @Test
     public void readCompensation_employeeDoesExist_compensationExists(){
-        // given an employeeId is provided
-        // and the employee does exist
+        // given an employee
+        Employee testEmployee = createNewTestEmployee();
+
         // and the compensation does  exist
+        Compensation testCompensation = new Compensation();
+        testCompensation.setSalary(10000);
+        testCompensation.setEffectiveDate(LocalDate.now());
+        Employee dbEmployee = new Employee();
+        dbEmployee.setEmployeeId(testEmployee.getEmployeeId());
+        testCompensation.setEmployee(dbEmployee);
+        compensationRepository.insert(testCompensation);
         // then return compensation
+        testCompensation.setEmployee(testEmployee);
+        Optional<Compensation> compensationResponse = compensationService.readCompensation(testEmployee.getEmployeeId());
+        assertTrue(compensationResponse.isPresent());
+        assertCompensationEquivalence(testCompensation, compensationResponse.get());
     }
 
     private Employee createNewTestEmployee(){

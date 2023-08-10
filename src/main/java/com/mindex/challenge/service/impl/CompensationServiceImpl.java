@@ -26,6 +26,8 @@ public class CompensationServiceImpl implements CompensationService {
         if(employeeRepository.findByEmployeeId(employeeId) == null){
             throw new EmployeeDoesNotExistException();
         }
+        // In a real world scenario, I would want to get requirement clarification here.
+        // Does it support multiple compensations OR is this an update?
         if(compensationRepository.findByEmployeeEmployeeId(employeeId) != null){
             throw new CompensationAlreadyExistsException();
         }
@@ -39,6 +41,18 @@ public class CompensationServiceImpl implements CompensationService {
 
     @Override
     public Optional<Compensation> readCompensation(String employeeId){
-        return Optional.empty();
+        Employee employee = employeeRepository.findByEmployeeId(employeeId);
+        if(employee == null){
+            throw new EmployeeDoesNotExistException();
+        }
+
+
+        Compensation compensation = compensationRepository.findByEmployeeEmployeeId(employeeId);
+        if(compensation == null){
+            return Optional.empty();
+        } else {
+            compensation.setEmployee(employee);
+            return Optional.of(compensation);
+        }
     }
 }
