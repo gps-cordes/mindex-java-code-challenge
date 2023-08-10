@@ -1,4 +1,4 @@
 package com.mindex.challenge.exception;
 
-public class EmployeeDoesNotExistException extends Exception{
+public class EmployeeDoesNotExistException extends RuntimeException{
 }

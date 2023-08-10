@@ -31,7 +31,7 @@ public class CompensationServiceImplTest{
     private EmployeeServiceImpl employeeService;
 
     @Test(expected = EmployeeDoesNotExistException.class)
-    public void createCompensation_employeeDoesNotExist() {
+    public void createCompensation_employeeDoesNotExist() throws Exception{
         // given employee id is provided
         String id = "ThisIdDoesNotExist";
         Compensation compensation = new Compensation();
