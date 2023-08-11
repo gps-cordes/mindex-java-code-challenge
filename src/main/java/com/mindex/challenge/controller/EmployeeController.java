@@ -1,11 +1,13 @@
 package com.mindex.challenge.controller;
 
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.exception.EmployeeDoesNotExistException;
 import com.mindex.challenge.response.ReportingStructure;
 import com.mindex.challenge.service.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +44,12 @@ public class EmployeeController {
     @GetMapping("/employee/{id}/report")
     public ReportingStructure employeeReport(@PathVariable String id, HttpServletResponse response) {
         LOG.debug("Received employee report request for id [{}] ", id);
-        return employeeService.report(id);
+        try {
+            return employeeService.report(id);
+        } catch (EmployeeDoesNotExistException e){
+            // avoids throwing a 500 for missing data, since 500 should be reserved for truly unexpected error states
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return null;
+        }
     }
 }
