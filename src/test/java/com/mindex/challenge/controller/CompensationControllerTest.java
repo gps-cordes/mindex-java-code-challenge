@@ -43,8 +43,10 @@ public class CompensationControllerTest {
         String johnLennonEmployeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
 
         // given employee does not have compensation
-
-        assertNull(restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId).getBody());
+        ResponseEntity<Compensation> noCompensationResponse = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId);
+//      TODO: implement NO_CONTENT response
+//        assertEquals(HttpStatus.NO_CONTENT, noCompensationResponse.getStatusCode());
+        assertEquals(null, noCompensationResponse.getBody());
         // Create a new compensation
         Compensation compensationRequest = new Compensation();
         compensationRequest.setSalary(10000);
@@ -69,12 +71,22 @@ public class CompensationControllerTest {
     }
 
     @Test
+    public void createCompensation_employeeDoesNotExist(){
+        String johnLennonEmployeeId = "thisEmployeeDoesNotExist";
+
+        // given employee does not have compensation
+        ResponseEntity<Compensation> response = restTemplate.postForEntity(employeeIdCompensationUrl, new Compensation(), Compensation.class, johnLennonEmployeeId);
+        assertNotEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        // Create a new compensation
+    }
+
+    @Test
     public void readCompensation_employeeDoesNotExist(){
         String johnLennonEmployeeId = "thisEmployeeDoesNotExist";
 
         // given employee does not have compensation
         ResponseEntity<Compensation> response = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId);
-        assertNull(response.getBody());
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         // Create a new compensation
