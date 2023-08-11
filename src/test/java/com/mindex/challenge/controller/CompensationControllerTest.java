@@ -44,8 +44,7 @@ public class CompensationControllerTest {
 
         // given employee does not have compensation
         ResponseEntity<Compensation> noCompensationResponse = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId);
-//      TODO: implement NO_CONTENT response
-//        assertEquals(HttpStatus.NO_CONTENT, noCompensationResponse.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, noCompensationResponse.getStatusCode());
         assertEquals(null, noCompensationResponse.getBody());
         // Create a new compensation
         Compensation compensationRequest = new Compensation();
@@ -66,7 +65,7 @@ public class CompensationControllerTest {
         // try to create a new compensation, expect an error
         ResponseEntity<Compensation> response = restTemplate.postForEntity(employeeIdCompensationUrl, compensationRequest, Compensation.class, johnLennonEmployeeId);
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
     }
 
@@ -77,7 +76,7 @@ public class CompensationControllerTest {
         // given employee does not have compensation
         ResponseEntity<Compensation> response = restTemplate.postForEntity(employeeIdCompensationUrl, new Compensation(), Compensation.class, johnLennonEmployeeId);
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         // Create a new compensation
     }
 
@@ -88,7 +87,7 @@ public class CompensationControllerTest {
         // given employee does not have compensation
         ResponseEntity<Compensation> response = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId);
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         // Create a new compensation
     }
 }
