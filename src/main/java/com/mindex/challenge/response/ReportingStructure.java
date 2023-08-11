@@ -1,4 +1,6 @@
-package com.mindex.challenge.data;
+package com.mindex.challenge.response;
+
+import com.mindex.challenge.data.Employee;
 
 public class ReportingStructure {
     private Employee employee;
