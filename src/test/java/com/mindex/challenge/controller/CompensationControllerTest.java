@@ -45,11 +45,11 @@ public class CompensationControllerTest {
         // given employee does not have compensation
         ResponseEntity<Compensation> noCompensationResponse = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId);
         assertEquals(HttpStatus.NO_CONTENT, noCompensationResponse.getStatusCode());
-        assertEquals(null, noCompensationResponse.getBody());
+        assertNull(noCompensationResponse.getBody());
         // Create a new compensation
         Compensation compensationRequest = new Compensation();
         compensationRequest.setSalary(10000);
-        compensationRequest.setEffectiveDate(LocalDate.now());
+        compensationRequest.setEffectiveDate(LocalDate.now().minusDays(30));
         assertEquals(HttpStatus.OK, restTemplate.postForEntity(employeeIdCompensationUrl, compensationRequest, Compensation.class, johnLennonEmployeeId).getStatusCode());
 
         // read the new compensation
@@ -62,10 +62,24 @@ public class CompensationControllerTest {
 
         assertCompensationEquivalence(expectedCompensation, compensationResponse);
 
-        // try to create a new compensation, expect an error
+        // try to create a new compensation, expect an error because collision with existing date
         ResponseEntity<Compensation> response = restTemplate.postForEntity(employeeIdCompensationUrl, compensationRequest, Compensation.class, johnLennonEmployeeId);
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // can insert a new record because different date
+        compensationRequest.setSalary(12000);
+        compensationRequest.setEffectiveDate(LocalDate.now().minusDays(2));
+        response = restTemplate.postForEntity(employeeIdCompensationUrl, compensationRequest, Compensation.class, johnLennonEmployeeId);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // expect this to be the latest salary from the read
+        compensationResponse = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId).getBody();
+        expectedCompensation.setEmployee(employeeService.read(johnLennonEmployeeId)); // will be fully hydrated
+        expectedCompensation.setEffectiveDate(compensationRequest.getEffectiveDate());
+        expectedCompensation.setSalary(compensationRequest.getSalary());
+
+        assertCompensationEquivalence(expectedCompensation, compensationResponse);
 
     }
 

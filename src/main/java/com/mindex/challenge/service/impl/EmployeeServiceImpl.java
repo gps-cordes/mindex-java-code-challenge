@@ -57,7 +57,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findByEmployeeId(id);
         if(employee == null){
             throw new EmployeeDoesNotExistException("Invalid employee id "+id);
-            // return a 204 NO Content http status?
         }
         // iterate through the tree of reports using queue
         LinkedList<Employee> queue = new LinkedList<>(getDirectReports(employee));

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,7 +35,8 @@ public class CompensationServiceImpl implements CompensationService {
         }
         // In a real world scenario, I would want to get requirement clarification here.
         // Does it support multiple compensations OR is this an update?
-        if(compensationRepository.findByEmployeeEmployeeId(employeeId) != null){
+
+        if(compensationRepository.findByEmployeeEmployeeIdAndEffectiveDate(employeeId, compensation.getEffectiveDate()).isPresent()){
             LOG.error("Compensation for id [{}] already exists and cannot be recreated", employeeId);
             throw new CompensationAlreadyExistsException();
         }
@@ -55,12 +58,13 @@ public class CompensationServiceImpl implements CompensationService {
         }
 
 
-        Compensation compensation = compensationRepository.findByEmployeeEmployeeId(employeeId);
-        if(compensation == null){
+        List<Compensation> compensationResults = compensationRepository.findByEmployeeEmployeeIdAndEffectiveDateLessThanOrderByEffectiveDateDesc(employeeId, LocalDateTime.now());
+        if(compensationResults.isEmpty()){
             LOG.debug("No compensation found for employee id [{}]", employeeId);
             return Optional.empty();
         } else {
             LOG.debug("Compensation found for employee id [{}]:", employeeId);
+            Compensation compensation = compensationResults.get(0);
             compensation.setEmployee(employee);
             return Optional.of(compensation);
         }

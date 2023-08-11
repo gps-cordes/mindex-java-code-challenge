@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -60,7 +61,8 @@ public class CompensationServiceImplTest{
         testCompensation.setEffectiveDate(LocalDate.now());
         testCompensation.setSalary(100000);
         // and the compensation does not exist
-        assertNull(compensationRepository.findByEmployeeEmployeeId(testEmployee.getEmployeeId()));
+        assertTrue(compensationRepository.findByEmployeeEmployeeIdAndEffectiveDateLessThanOrderByEffectiveDateDesc(
+                testEmployee.getEmployeeId(), LocalDateTime.now()).isEmpty());
 
         // then create the compensation
         Compensation compensationResponse = compensationService.createCompensation(testEmployee.getEmployeeId(), testCompensation);
@@ -72,7 +74,8 @@ public class CompensationServiceImplTest{
         Employee expectedDBEmployee = new Employee();
         expectedDBEmployee.setEmployeeId(testEmployee.getEmployeeId());
         testCompensation.setEmployee(expectedDBEmployee);
-        TestUtil.assertCompensationEquivalence(testCompensation, compensationRepository.findByEmployeeEmployeeId(testEmployee.getEmployeeId()));
+        TestUtil.assertCompensationEquivalence(testCompensation,
+                compensationRepository.findByEmployeeEmployeeIdAndEffectiveDateLessThanOrderByEffectiveDateDesc(testEmployee.getEmployeeId(), LocalDateTime.now()).get(0));
     }
 
     @Test(expected = CompensationAlreadyExistsException.class)

@@ -1,13 +1,16 @@
 package com.mindex.challenge.data;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 
 import java.time.LocalDate;
 
+@CompoundIndex(def = "{'employee':1, 'effectiveDate':1}", unique = true)
 public class Compensation {
 
 
     // when writing, only write the employeeID, similar to how the direct reports are written. Retrieval will hydrate it.
+
     private Employee employee;
 
     // in dollars
