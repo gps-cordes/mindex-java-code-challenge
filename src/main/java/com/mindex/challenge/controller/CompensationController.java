@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CompensationController {
-    private static final Logger LOG = LoggerFactory.getLogger(EmployeeController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CompensationController.class);
     @Autowired
     private CompensationService compensationService;
 
     @PostMapping("/employee/{id}/compensation")
-    public Compensation createCompensation(@RequestBody Compensation compensation, @PathVariable String id){
+    public Compensation create(@RequestBody Compensation compensation, @PathVariable String id){
         LOG.debug("Received employee compensation create request for id [{}] ", id);
         return compensationService.createCompensation(id, compensation);
     }
 
     @GetMapping("/employee/{id}/compensation")
-    public Compensation getCompensation(@PathVariable String id){
-        LOG.debug("Received employee compensation request for id [{}] ", id);
+    public Compensation read(@PathVariable String id){
+        LOG.debug("Received employee compensation read request for id [{}] ", id);
         return compensationService.readCompensation(id).orElse(null);
     }
 }

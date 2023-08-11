@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class EmployeeController {
     private static final Logger LOG = LoggerFactory.getLogger(EmployeeController.class);
@@ -38,7 +40,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/{id}/report")
-    public ReportingStructure employeeReport(@PathVariable String id) {
+    public ReportingStructure employeeReport(@PathVariable String id, HttpServletResponse response) {
         LOG.debug("Received employee report request for id [{}] ", id);
         return employeeService.report(id);
     }

@@ -2,6 +2,7 @@ package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.data.Employee;
+import com.mindex.challenge.exception.EmployeeDoesNotExistException;
 import com.mindex.challenge.response.ReportingStructure;
 import com.mindex.challenge.service.EmployeeService;
 import org.slf4j.Logger;
@@ -51,10 +52,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ReportingStructure report(String id) {
+        LOG.debug("Creating report for employee id [{}]", id);
         // get the employee
         Employee employee = employeeRepository.findByEmployeeId(id);
         if(employee == null){
-            throw new RuntimeException("Invalid employee ID");
+            throw new EmployeeDoesNotExistException("Invalid employee id "+id);
             // return a 204 NO Content http status?
         }
         // iterate through the tree of reports using queue
