@@ -12,9 +12,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
+import com.mindex.challenge.TestUtil;
+
 
 import java.util.List;
 
+import static com.mindex.challenge.TestUtil.assertEmployeeEquivalence;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -154,10 +157,4 @@ public class EmployeeServiceImplTest {
         assertEquals("employee report for an employee that should not exist does not return no content status code", HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
-    private static void assertEmployeeEquivalence(Employee expected, Employee actual) {
-        assertEquals(expected.getFirstName(), actual.getFirstName());
-        assertEquals(expected.getLastName(), actual.getLastName());
-        assertEquals(expected.getDepartment(), actual.getDepartment());
-        assertEquals(expected.getPosition(), actual.getPosition());
-    }
 }

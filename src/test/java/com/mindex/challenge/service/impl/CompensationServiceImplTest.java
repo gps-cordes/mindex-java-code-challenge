@@ -1,5 +1,6 @@
 package com.mindex.challenge.service.impl;
 
+import com.mindex.challenge.TestUtil;
 import com.mindex.challenge.dao.CompensationRepository;
 import com.mindex.challenge.data.Compensation;
 import com.mindex.challenge.data.Employee;
@@ -65,13 +66,13 @@ public class CompensationServiceImplTest{
         Compensation compensationResponse = compensationService.createCompensation(testEmployee.getEmployeeId(), testCompensation);
         // and return the compensation
         testCompensation.setEmployee(testEmployee);
-        assertCompensationEquivalence(testCompensation, compensationResponse);
+        TestUtil.assertCompensationEquivalence(testCompensation, compensationResponse);
 
         // and the compensation was stored the required fields and the employeeId filled in
         Employee expectedDBEmployee = new Employee();
         expectedDBEmployee.setEmployeeId(testEmployee.getEmployeeId());
         testCompensation.setEmployee(expectedDBEmployee);
-        assertCompensationEquivalence(testCompensation, compensationRepository.findByEmployeeEmployeeId(testEmployee.getEmployeeId()));
+        TestUtil.assertCompensationEquivalence(testCompensation, compensationRepository.findByEmployeeEmployeeId(testEmployee.getEmployeeId()));
     }
 
     @Test(expected = CompensationAlreadyExistsException.class)
@@ -139,7 +140,7 @@ public class CompensationServiceImplTest{
         testCompensation.setEmployee(testEmployee);
         Optional<Compensation> compensationResponse = compensationService.readCompensation(testEmployee.getEmployeeId());
         assertTrue(compensationResponse.isPresent());
-        assertCompensationEquivalence(testCompensation, compensationResponse.get());
+        TestUtil.assertCompensationEquivalence(testCompensation, compensationResponse.get());
     }
 
     private Employee createNewTestEmployee(){
@@ -149,20 +150,6 @@ public class CompensationServiceImplTest{
         testEmployee.setPosition("Developer");
         testEmployee.setDepartment("Realty");
         return employeeService.create(testEmployee);
-    }
-
-    private static void assertCompensationEquivalence(Compensation expected, Compensation actual){
-        // check employee
-        assertEquals(expected.getEmployee().getEmployeeId(), actual.getEmployee().getEmployeeId());
-        // this could go into a utility method shared between the tests
-        assertEquals(expected.getEmployee().getFirstName(), actual.getEmployee().getFirstName());
-        assertEquals(expected.getEmployee().getLastName(), actual.getEmployee().getLastName());
-        assertEquals(expected.getEmployee().getDepartment(), actual.getEmployee().getDepartment());
-        assertEquals(expected.getEmployee().getPosition(), actual.getEmployee().getPosition());
-        // check compensation
-        assertEquals(expected.getEffectiveDate(), actual.getEffectiveDate());
-        assertEquals(expected.getSalary(), actual.getSalary());
-
     }
 
 }
