@@ -46,6 +46,7 @@ public class CompensationControllerTest {
         ResponseEntity<Compensation> noCompensationResponse = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId);
         assertEquals(HttpStatus.NO_CONTENT, noCompensationResponse.getStatusCode());
         assertNull(noCompensationResponse.getBody());
+
         // Create a new compensation
         Compensation compensationRequest = new Compensation();
         compensationRequest.setSalary(10000);
@@ -66,6 +67,7 @@ public class CompensationControllerTest {
         ResponseEntity<Compensation> response = restTemplate.postForEntity(employeeIdCompensationUrl, compensationRequest, Compensation.class, johnLennonEmployeeId);
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody()); // body should have an error message
 
         // can insert a new record because different date
         compensationRequest.setSalary(12000);
@@ -91,6 +93,7 @@ public class CompensationControllerTest {
         ResponseEntity<Compensation> response = restTemplate.postForEntity(employeeIdCompensationUrl, new Compensation(), Compensation.class, johnLennonEmployeeId);
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody()); // body should have an error message
         // Create a new compensation
     }
 
@@ -102,6 +105,7 @@ public class CompensationControllerTest {
         ResponseEntity<Compensation> response = restTemplate.getForEntity(employeeIdCompensationUrl, Compensation.class, johnLennonEmployeeId);
         assertNotEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody()); // body should have an error message
         // Create a new compensation
     }
 }

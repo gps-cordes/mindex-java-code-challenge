@@ -1,4 +1,4 @@
-package com.mindex.challenge.exception;
+package com.mindex.challenge.error.exception;
 
 public class CompensationAlreadyExistsException extends RuntimeException{
 }

@@ -2,7 +2,7 @@ package com.mindex.challenge.service.impl;
 
 import com.mindex.challenge.dao.EmployeeRepository;
 import com.mindex.challenge.data.Employee;
-import com.mindex.challenge.exception.EmployeeDoesNotExistException;
+import com.mindex.challenge.error.exception.EmployeeDoesNotExistException;
 import com.mindex.challenge.response.ReportingStructure;
 import com.mindex.challenge.service.EmployeeService;
 import org.slf4j.Logger;
@@ -37,6 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findByEmployeeId(id);
 
         if (employee == null) {
+            // did not replace with specific exception in order to maintain existing behavior and any external integration tests built on it
             throw new RuntimeException("Invalid employeeId: " + id);
         }
 

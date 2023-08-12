@@ -1,8 +1,6 @@
 package com.mindex.challenge.controller;
 
 import com.mindex.challenge.data.Compensation;
-import com.mindex.challenge.exception.CompensationAlreadyExistsException;
-import com.mindex.challenge.exception.EmployeeDoesNotExistException;
 import com.mindex.challenge.service.CompensationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,31 +18,20 @@ public class CompensationController {
     @PostMapping("/employee/{id}/compensation")
     public Compensation create(@RequestBody Compensation compensation, @PathVariable String id, HttpServletResponse response){
         LOG.debug("Received employee compensation create request for id [{}] ", id);
-        try {
-            return compensationService.createCompensation(id, compensation);
-        } catch (EmployeeDoesNotExistException | CompensationAlreadyExistsException e){
-            // Avoid using 500, so use a 400 when the employee does not exist.
-            // Not a 404 because that is often intuited as path not found
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        }
+        return compensationService.createCompensation(id, compensation);
+
     }
 
     @GetMapping("/employee/{id}/compensation")
     public Compensation read(@PathVariable String id, HttpServletResponse response){
         LOG.debug("Received employee compensation read request for id [{}] ", id);
 
-        try {
-            return compensationService.readCompensation(id).orElseGet(
-                    () ->  {
-                        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                        return null;}
+
+        return compensationService.readCompensation(id).orElseGet(
+                () ->  { // no compensation is not an error state, so just return no data back and 204 (would document this and inform clients)
+                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                    return null;}
             );
-        } catch (EmployeeDoesNotExistException e){
-            // Avoid using 500, so use a 400 when the employee does not exist.
-            // Not a 404 because that is often intuited as path not found
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        }
+
     }
 }
