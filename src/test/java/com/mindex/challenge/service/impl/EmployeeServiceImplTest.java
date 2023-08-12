@@ -151,9 +151,9 @@ public class EmployeeServiceImplTest {
         // verify that the employee ID does not actually exists
         assertEquals("employee should not exist in the database", HttpStatus.INTERNAL_SERVER_ERROR, restTemplate.getForEntity(employeeIdUrl, Employee.class, testEmployeeId).getStatusCode());
 
-        // return a 204 (not 404, which implies the rest api path does not exist at all)
+        // return a 400 (not 404, which implies the rest api path does not exist at all)
         ResponseEntity response = restTemplate.getForEntity(employeeReportIdUrl, ReportingStructure.class, "ThisEmployeeIdDoesNotExist");
-        assertEquals("employee report for an employee that should not exist does not return no content status code", HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertEquals("employee report for an employee that should not exist does not return no content status code", HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
 }
