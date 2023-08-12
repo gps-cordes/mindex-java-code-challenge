@@ -31,7 +31,7 @@ public class CompensationServiceImpl implements CompensationService {
         LOG.debug("Creating new compensation for employee id [{}]", employeeId);
         if(employeeRepository.findByEmployeeId(employeeId) == null){
             LOG.error("Employee for id [{}] does not exist", employeeId);
-            throw new EmployeeDoesNotExistException();
+            throw new EmployeeDoesNotExistException("Invalid employee id");
         }
         // The effective_date in the compensation object implies to me that salary can change over time and that we would want to maintain a historical record,
         if(compensationRepository.findByEmployeeEmployeeIdAndEffectiveDate(employeeId, compensation.getEffectiveDate()).isPresent()){
@@ -52,7 +52,7 @@ public class CompensationServiceImpl implements CompensationService {
         Employee employee = employeeRepository.findByEmployeeId(employeeId);
         if(employee == null){
             LOG.error("Employee for id [{}] does not exist", employeeId);
-            throw new EmployeeDoesNotExistException();
+            throw new EmployeeDoesNotExistException("Invalid employee id");
         }
 
 

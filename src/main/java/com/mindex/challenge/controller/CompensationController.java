@@ -16,7 +16,7 @@ public class CompensationController {
     private CompensationService compensationService;
 
     @PostMapping("/employee/{id}/compensation")
-    public Compensation create(@RequestBody Compensation compensation, @PathVariable String id, HttpServletResponse response){
+    public Compensation create(@RequestBody Compensation compensation, @PathVariable String id){
         LOG.debug("Received employee compensation create request for id [{}] ", id);
         return compensationService.createCompensation(id, compensation);
 
