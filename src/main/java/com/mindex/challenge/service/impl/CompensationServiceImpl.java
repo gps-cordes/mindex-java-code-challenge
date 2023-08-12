@@ -33,9 +33,7 @@ public class CompensationServiceImpl implements CompensationService {
             LOG.error("Employee for id [{}] does not exist", employeeId);
             throw new EmployeeDoesNotExistException();
         }
-        // In a real world scenario, I would want to get requirement clarification here.
-        // Does it support multiple compensations OR is this an update?
-
+        // The effective_date in the compensation object implies to me that salary can change over time and that we would want to maintain a historical record,
         if(compensationRepository.findByEmployeeEmployeeIdAndEffectiveDate(employeeId, compensation.getEffectiveDate()).isPresent()){
             LOG.error("Compensation for id [{}] already exists and cannot be recreated", employeeId);
             throw new CompensationAlreadyExistsException();
